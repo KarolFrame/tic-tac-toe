@@ -1,0 +1,11 @@
+ol {
+  font-size: 20px;
+}
+.turn {
+  width: 200px;
+  height: 50px;
+  font-size: 20px;
+}
+.hidden {
+  display: none;
+}

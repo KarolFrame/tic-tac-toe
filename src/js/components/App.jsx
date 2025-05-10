@@ -2,6 +2,7 @@ import React from "react";
 import Title from "./Title";
 import TurnsList from "./TurnsList";
 import BoardGame from "./BoardGame";
+import Turn from "./Turn";
 import { useState } from "react";
 
 const App = () => {
@@ -19,6 +20,16 @@ const App = () => {
   ]);
   const [state, setState] = useState("X");
   const [inGameText, setInGameText] = useState("Next player: ");
+
+  const [currentTurn, setCurrentTurn] = useState([]);
+
+  const _newTurn = () => {
+    setCurrentTurn((previusTurns) => {
+      const newTurns = [...previusTurns, buttons];
+      console.log(newTurns);
+      return newTurns;
+    });
+  };
 
   const _checkWin = (currentPlayer, buttons) => {
     const winCombos = [
@@ -58,32 +69,37 @@ const App = () => {
   const clickButton = (index) => {
     if (gameOver) return;
 
-    setButtons((box) => {
-      const updatedButtons = box.map((btn, i) =>
-        i === index ? { ...btn, content: state, getDisableButton: true } : btn
-      );
+    const updatedButtons = buttons.map((btn, i) =>
+      i === index ? { ...btn, content: state, getDisableButton: true } : btn
+    );
 
-      if (_checkWin(state, updatedButtons)) {
-        setInGameText("Winner: ");
-        setGameOver(true);
-        return updatedButtons;
-      }
+    if (_checkWin(state, updatedButtons)) {
+      setButtons(updatedButtons);
+      setInGameText("Winner: ");
+      setGameOver(true);
+      return;
+    }
 
-      _changeState();
-      return updatedButtons;
-    });
+    setButtons(updatedButtons);
+    _newTurn();
+    _changeState();
+  };
+
+  const onClickTurn = (turnButton) => {
+    setButtons(currentTurn[turnButton]);
+    setCurrentTurn(currentTurn.slice(0, turnButton));
   };
 
   return (
     <>
       <div className="container-fluid m-5">
         <div className="row">
-          <div className="col d-flex flex-column">
+          <div className="col-12 col-md-4 d-flex flex-column">
             <Title inGameText={inGameText} state={state} />
             <BoardGame buttons={buttons} clickButton={clickButton} />
           </div>
-          <div className="col">
-            <TurnsList />
+          <div className="col-12 col-md-4 mt-5">
+            <TurnsList currentTurn={currentTurn} onClickTurn={onClickTurn} />
           </div>
         </div>
       </div>
