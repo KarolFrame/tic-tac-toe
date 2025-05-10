@@ -1,0 +1,9 @@
+button {
+  width: 60px;
+  height: 60px;
+}
+button:disabled {
+  color: #848484;
+  border: 1px solid #000000;
+  cursor: not-allowed;
+}
